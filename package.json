@@ -1,0 +1,17 @@
+{
+  "author": "Lloyd Hilaiel <lloyd@hilaiel.com> (http://lloyd.io)",
+  "name": "postprocess",
+  "description": "Connect middleware providing request post-proccessing.",
+  "version": "0.0.1",
+  "homepage": "http://github.com/lloyd/connect-postprocess",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/lloyd/connect-postprocess.git"
+  },
+  "main": "connect-postprocess",
+  "engines": {
+    "node": ">=0.4.7"
+  },
+  "dependencies": {},
+  "devDependencies": {}
+}
