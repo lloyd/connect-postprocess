@@ -82,7 +82,7 @@ exports.middleware = function(subFunc) {
         if (buf) {
           if (Buffer.isBuffer(buf)) buf = buf.toString('utf8');
           var l = Buffer.byteLength(buf);
-          buf = subFunc(buf);
+          buf = subFunc(req, buf);
           if (l != Buffer.byteLength(buf)) resp.setHeader('Content-Length', Buffer.byteLength(buf));
         }
       }
