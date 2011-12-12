@@ -36,7 +36,7 @@
 // return a function that is substitution middleware, capable
 // of being installed to perform textual replacement on
 // all server output
-exports.middleware = function(subFunc) {
+module.exports = function(subFunc) {
   return function(req, resp, next) {
     // cache the *real* functions
     var realWrite = resp.write;
