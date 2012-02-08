@@ -12,6 +12,15 @@
   "engines": {
     "node": ">=0.4.7"
   },
-  "dependencies": {},
-  "devDependencies": {}
+  "dependencies": {
+    "buffertools": "1.0.7"
+  },
+  "devDependencies": {
+    "should": "*",
+    "mocha": "*",
+    "express": "*"
+  },
+  "scripts": {
+    "test": "mocha"
+  }
 }

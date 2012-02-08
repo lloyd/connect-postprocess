@@ -33,6 +33,8 @@
  *
  * ***** END LICENSE BLOCK ***** */
 
+var buffertools = require('buffertools');
+
 // return a function that is substitution middleware, capable
 // of being installed to perform textual replacement on
 // all server output
@@ -51,7 +53,7 @@ module.exports = function(subFunc) {
     resp.writeHead = function (sc, reason, hdrs) {
       var h = undefined;
       if (typeof hdrs === 'object') h = hdrs;
-      else if (typeof reason === 'object') h = reason; 
+      else if (typeof reason === 'object') h = reason;
       for (var k in h) {
         if (k.toLowerCase() === 'content-type') {
           contentType = h[k];
@@ -64,14 +66,14 @@ module.exports = function(subFunc) {
     };
 
     resp.write = function (chunk, encoding) {
-      if (buf) buf += chunk;
+      if (buf) buf = buffertools.concat(buf, chunk);
       else buf = chunk;
-      enc = encoding;
+      if (encoding) enc = encoding;
     };
 
     resp.send = function(stuff) {
       buf = stuff;
-      realSend.call(resp,stuff);
+      realSend.call(resp, stuff);
     };
 
     resp.end = function() {
@@ -79,11 +81,12 @@ module.exports = function(subFunc) {
       if (contentType && (contentType === "application/javascript" ||
                           contentType.substr(0,4) === 'text'))
       {
-        if (buf) {
-          if (Buffer.isBuffer(buf)) buf = buf.toString('utf8');
+        if (buf && buf.length) {
+          buf = buf.toString(enc);
           var l = Buffer.byteLength(buf);
           buf = subFunc(req, buf);
-          if (l != Buffer.byteLength(buf)) resp.setHeader('Content-Length', Buffer.byteLength(buf));
+          if (l != Buffer.byteLength(buf))
+              resp.setHeader('Content-Length', Buffer.byteLength(buf));
         }
       }
       if (buf && buf.length) {
