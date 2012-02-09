@@ -33,8 +33,6 @@
  *
  * ***** END LICENSE BLOCK ***** */
 
-var buffertools = require('buffertools');
-
 // return a function that is substitution middleware, capable
 // of being installed to perform textual replacement on
 // all server output
@@ -66,7 +64,12 @@ module.exports = function(subFunc) {
     };
 
     resp.write = function (chunk, encoding) {
-      if (buf) buf = buffertools.concat(buf, chunk);
+      if (buf) {
+        var n = new Buffer(buf.length + chunk.length);
+        buf.copy(n);
+        chunk.copy(n, buf.length);
+        buf = n;
+      }
       else buf = chunk;
       if (encoding) enc = encoding;
     };
