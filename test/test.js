@@ -13,6 +13,25 @@ describe('postprocess', function() {
     return buffer.replace(/foo/g, 'bar');
   }));
 
+  // test that writing two strings subsequently is
+  // handled by postprocess
+  app.get('/write_strings', function(req, res) {
+    res.setHeader('Content-Type', 'text/plain');
+    res.write('foo');
+    res.write('foo');
+    res.end();
+  });
+
+  app.get('/end_string', function(req, res) {
+    res.setHeader('Content-Type', 'text/plain');
+    res.end('foofoo');
+  });
+
+  app.get('/end_buffer', function(req, res) {
+    res.setHeader('Content-Type', 'text/plain');
+    res.end(new Buffer('foofoo'));
+  });
+
   app.use(express.static(path.join(__dirname, "files")));
 
   var port;
@@ -56,6 +75,27 @@ describe('postprocess', function() {
         r.data.length.should.equal(l);
         done();
       });
+    });
+  });
+
+  it('should not interfere with the semantics of write()', function(done) {
+    get('/write_strings', function(err, r) {
+      should(err === null);
+      r.data.should.equal('barbar');
+      done();
+    });
+  });
+
+  it('should not interfere with the semantics of end()', function(done) {
+    get('/end_string', function(err, r) {
+      should(err === null);
+      r.data.should.equal('barbar');
+    });
+    
+    get('/end_buffer', function (err,r) {
+      should(err === null);
+      r.data.should.equal('barbar');
+      done();
     });
   });
 });
