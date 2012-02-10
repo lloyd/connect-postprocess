@@ -42,7 +42,6 @@ module.exports = function(subFunc) {
     var realWrite = resp.write;
     var realEnd = resp.end;
     var realWriteHead = resp.writeHead;
-    var realSend = resp.send;
 
     var buf = undefined;
     var enc = undefined;
@@ -69,17 +68,15 @@ module.exports = function(subFunc) {
         buf.copy(n);
         chunk.copy(n, buf.length);
         buf = n;
+      } else {
+        if (Buffer.isBuffer(chunk)) buf = chunk;
+        else buf = new Buffer(chunk, encoding);
       }
-      else buf = chunk;
       if (encoding) enc = encoding;
     };
 
-    resp.send = function(stuff) {
-      buf = stuff;
-      realSend.call(resp, stuff);
-    };
-
-    resp.end = function() {
+    resp.end = function(body) {
+      if (!buf && body) buf = body;
       if (!contentType) contentType = resp.getHeader('content-type');
       if (contentType && (contentType === "application/javascript" ||
                           contentType.substr(0,4) === 'text'))

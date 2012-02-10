@@ -41,7 +41,7 @@ describe('postprocess', function() {
     get('/404.html', function(err, r) {
       should(err === null);
       (r.res.statusCode).should.equal(404);
-      r.data.should.equal("");
+      r.data.should.equal("Cannot GET /404.html");
       done();
     });
   });
