@@ -64,9 +64,12 @@ module.exports = function(subFunc) {
 
     resp.write = function (chunk, encoding) {
       if (buf) {
-        var n = new Buffer(buf.length + chunk.length);
+        var len = (Buffer.isBuffer(chunk) ? chunk.length : Buffer.byteLength(chunk));
+        len += buf.length;
+        var n = new Buffer(len);
         buf.copy(n);
-        chunk.copy(n, buf.length);
+        if (Buffer.isBuffer(chunk)) chunk.copy(n, buf.length);
+        else n.write(chunk, buf.length);
         buf = n;
       } else {
         if (Buffer.isBuffer(chunk)) buf = chunk;
