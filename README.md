@@ -7,14 +7,14 @@ Useful for things like subbing production urls with development.
 
 ## usage
 
-To replace all occurances of '127.0.0.1' with a variable 'IP_ADDRESS' in
+To replace all occurances of `127.0.0.1` with a variable `IP_ADDRESS` in
 responses:
 
-  express.use(require('postprocess')(
-    function(req, buf) {
-      var re = new Regexp('127\.0\.0\.1', 'g');
-      return buf.replace(re, IP_ADDRESS);
-    });
+    express.use(require('postprocess')(
+      function(req, buf) {
+        var re = new Regexp('127\.0\.0\.1', 'g');
+        return buf.replace(re, IP_ADDRESS);
+      });
 
 ## license
 
