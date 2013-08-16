@@ -86,12 +86,20 @@ describe('postprocess', function() {
     });
   });
 
+  it('should not interfere with the semantics of setHeader()', function(done) {
+    get('/write_strings', function(err, r) {
+      should(err === null);
+      r.res.headers['content-type'].should.equal('text/plain');
+      done();
+    });
+  });
+
   it('should not interfere with the semantics of end()', function(done) {
     get('/end_string', function(err, r) {
       should(err === null);
       r.data.should.equal('barbar');
     });
-    
+
     get('/end_buffer', function (err,r) {
       should(err === null);
       r.data.should.equal('barbar');

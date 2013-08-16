@@ -42,6 +42,7 @@ module.exports = function(subFunc) {
     var realWrite = resp.write;
     var realEnd = resp.end;
     var realWriteHead = resp.writeHead;
+    var realSetHeader = resp.setHeader;
 
     var buf = undefined;
     var enc = undefined;
@@ -78,6 +79,11 @@ module.exports = function(subFunc) {
       if (encoding) enc = encoding;
     };
 
+    resp.setHeader = function(name, value) {
+      if (name.toLowerCase() === 'content-type') contentType = value;
+      realSetHeader.call(resp, name, value);
+    };
+
     resp.end = function(body) {
       if (!buf && body) buf = body;
       if (!contentType) contentType = resp.getHeader('content-type');
@@ -96,7 +102,7 @@ module.exports = function(subFunc) {
         realWrite.call(resp, buf, enc);
       }
       realEnd.call(resp);
-    }
+    };
 
     next();
   };
